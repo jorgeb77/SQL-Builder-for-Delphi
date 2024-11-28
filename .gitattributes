@@ -1,0 +1,120 @@
+##################################################################
+# Set default behavior to automatically normalize line endings.
+##################################################################
+
+* text=auto
+
+##################################################################
+# Typical text files
+##################################################################
+
+# C++ files
+*.h                 text eol=crlf
+*.cpp               text eol=crlf
+
+# Delphi files
+*.dproj             text eol=crlf
+*.deployproj        text eol=crlf
+*.vlb               text eol=crlf
+*.optset            text eol=crlf
+*.pas               text eol=crlf
+*.dpr               text eol=crlf
+*.bpr               text eol=crlf
+*.drc               text eol=crlf
+*.bgg               text eol=crlf
+*.cfg               text eol=crlf
+*.dof               text eol=crlf
+*.groupproj         text eol=crlf
+*.bdsgroup          text eol=crlf
+*.dfm               text eol=crlf
+*.fmx               text eol=crlf
+*.otares            binary
+*.res               binary
+*.keystore          binary
+
+# Windows files
+*.rc                text eol=crlf
+*.bat               text eol=crlf
+*.cmd               text eol=crlf
+*.dll               binary
+*.exe               binary
+*.dsk               binary
+
+##################################################################
+# Set the merge driver for project files
+##################################################################
+
+*.dproj             merge=binary
+*.groupproj         merge=binary
+
+##################################################################
+# Image files are treated as binary by default
+##################################################################
+
+*.png               binary
+*.bmp               binary
+*.ico               binary
+*.xpm               binary
+*.ppm               binary
+*.pgm               binary
+*.pbm               binary
+*.jpg               binary
+
+
+##################################################################
+# XML
+##################################################################
+
+*.xml               text
+*.dtd               text
+*.xsd               text
+*.xsl               text
+
+##################################################################
+# Web
+##################################################################
+
+*.html              text diff=html
+*.css               text diff=css
+
+##################################################################
+# Archive
+##################################################################
+
+*.tar               binary
+*.zip               binary
+
+##################################################################
+# Database
+##################################################################
+
+*.dbf               binary
+*.mdx               binary
+
+##################################################################
+# Spreadsheet
+##################################################################
+
+*.ods               binary
+*.xls               binary
+*.xlsx              binary
+
+
+##################################################################
+# General
+##################################################################
+
+*.txt               text
+*.po                binary
+*.bak               binary
+*.cfg               text
+*.chm               binary
+*.csv               text
+*.hlp               binary
+*.ini               text
+*.odt               text
+*.pdf               text
+*.ps                text
+*.rtf               text
+*.docx              binary
+*.doc               binary
