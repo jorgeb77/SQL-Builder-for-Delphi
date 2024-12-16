@@ -3,12 +3,12 @@ program SQLBuilder;
 uses
   Vcl.Forms,
   UFRBuilder in 'UFRBuilder.pas' {FRBuilder},
-  UFRQueryBuilder in 'UFRQueryBuilder.pas' {FRQueryBuilder},
-  UFRNuevoJoin in 'UFRNuevoJoin.pas' {FRNuevoJoin},
-  UFRListadoTablas in 'UFRListadoTablas.pas' {FRListadoTablas},
   Utileria in 'Librerias\Utileria.pas',
   SynTaskDialog in 'Librerias\SynTaskDialog.pas',
-  ModoOscuroClaro in 'Librerias\ModoOscuroClaro.pas';
+  ModoOscuroClaro in 'Librerias\ModoOscuroClaro.pas',
+  SelectQueryBuilder in 'SelectQueryBuilder.pas',
+  SQLAliasGenerator in 'SQLAliasGenerator.pas',
+  UFRSelectQueryBuilder in 'UFRSelectQueryBuilder.pas' {FRSelectQueryBuilder};
 
 {$R *.res}
 

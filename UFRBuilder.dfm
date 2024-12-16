@@ -492,35 +492,103 @@ object FRBuilder: TFRBuilder
           Margins.Bottom = 5
           Caption = 'SELECT'
           ImageIndex = 0
+          object Image1: TImage
+            Left = 206
+            Top = 10
+            Width = 43
+            Height = 49
+            Cursor = crHandPoint
+            Hint = 'Construir SQL Joins'
+            Margins.Left = 5
+            Margins.Top = 5
+            Margins.Right = 5
+            Margins.Bottom = 5
+            CustomHint = BalloonHint1
+            ParentShowHint = False
+            Picture.Data = {
+              0D546478536D617274496D61676589504E470D0A1A0A0000000D494844520000
+              0020000000200806000000737A7AF40000000473424954080808087C08648800
+              00049B494441545885AD965B6C936518C77FEFFA6D5FDB6DED36D61DD890380E
+              110A55B7E011A6A2C40B96A02186841B138217728377245E89C47843BCC170E3
+              29DEA0104F7153421613AD40667453ABA1E261DDC6BAAD5B4B4BA5E7F67BBC28
+              EDE806DBEAFABFFB9EC3F7FCDFE77DDE7F1E4585B06EC7016C1D4E00945A2250
+              4000239BC6E77E17AD12C5ED9DDB713E771CA5D411A057A9BB5310118019E035
+              B3AD255C11029A5E8752EC44A9530A963A3F056E22229AB9FE95AA4A10A83109
+              763DDBB65CF1DB61D68CF6463D53992BA8ABCEB26B6D9035960C7D7B7A4B7C03
+              836EBA5D5B646DABA3486ED87345FE99BCCE502846453AA09B7234993365E558
+              3483664BBA321D80F9C99F0ACC2DF28523D192EF44328552F99C0A1050B4DFEB
+              249DC95253AD31E2F12E8AF04DF8F14DF84B936E61D504B63FF62C4D9D9B4D7F
+              8EF90F6CDBB4FE6E33C0DA5647D136ECB922D381E03C017BA70B4DAFCD135B52
+              4404806434406C6E94FBBA7BD9B0ED2195CE64DF8EDE4CEC2F8F7AFE5FDABA1D
+              07703EFF3A0A76026D4B6808925791112397F5F9BF79838D9B36A0E08452EA50
+              AD457F077869A53320424A44D06C1D4E141C514A9D62052222C8CD2AA5EEDFB0
+              ED619F4A878E823A061CB69AF54F4464F388C7DBBBF03F0B6740446680D3005A
+              8DC9C05425BD862CA9E0F3245075D5C68DEEAA5CFC71E024C831113E34721944
+              E4A902D1BB4144102097CB3174C98DD65E9BE491B6EBCAD1584FD7FA8EF9B6DD
+              88323AEEA7C7B5456E3FD1B0C72BE3E3A37B0346F2A0C0491179EBDADFBFD1FF
+              FE9BE8BABE923300903372241309B4566B922E7B8C8E160B3D9B6A8B01538138
+              4638CEA3B7D900426371A6B2E11745E43D115E9DF58FF2B37B002397259B2D4F
+              8C00AA4C0AAA56ACE079D8EAAC5F58CDFACB91E0940C5D388B91CB965DB880A2
+              0E4C07820C0CBA1705DCC9B6F19EF68F2627277397CF9F5955F112020DF67ABA
+              D677161DE14814DF849F6ED7969284118F9750E4DF2EA559685BB79989BF7EA9
+              0C018B592F512BC83F9F85B611BC8C4FCD9E88DE8CFFFE60EFDEAFD3E90433E3
+              575743400A02B362546BDA9821F2B13299F6F4ECDEFF436CCD93689606402DB9
+              8E15CAC4C37E7EFAE030E958A8D801F77420F8C2C0A07B51FAC2191091587363
+              7DDF987FF6A46118FDD566DB2E6B9DAD516AEC9F2AA5DA97E12E22E2B6996D7D
+              AD5B9F8E5DFBF11CDADC6C00114E0BE2512B90621119B198751FC841E0823252
+              5F29C98EB27C7100A5947A4229D9AD14FD00DA979F9D251098C16AB55E5CEE35
+              16EE29140CD2DCD513AB6F72EC539273B7D4449E697034D168B7156393A914E1
+              4894F6564789904D07E6C4A4449FA8C9BF1E4D4418BAF8ED0AC897C27CF50F7A
+              F71D0AB5B5B6ED75B5C4BFEF76A63A7A5CF3033B159863C413A46FCFD692BC81
+              412FF14C15BFEA6980FFBF9225635186CE9FC161378FB534D92E97936BAD36A8
+              3119C02A17926878961B81314C0F380947A20C7BAE147D89640AA0C476275464
+              295D0D2AB6943636D8E871CDDF777E06BC253658FCAC2BD001A14C1D2B89AF54
+              07A6CB9C819902855513C8643200C713C9944ACCCC2D12B2C2F60BC59DD20D5C
+              BC95B77A02FD9F9FA3B1A9396CB55A8FC2F2EB18C0ECEC0C4397BE03E03F236A
+              149635A3A21D0000000049454E44AE426082}
+            ShowHint = True
+            OnClick = Image1Click
+          end
           object ListCamposWhereSelect: TcxCheckListBox
             Left = 471
             Top = 72
             Width = 402
-            Height = 744
+            Height = 765
             Margins.Left = 5
             Margins.Top = 5
             Margins.Right = 5
             Margins.Bottom = 5
             EditValueFormat = cvfCaptions
             Items = <>
+            ParentFont = False
+            Style.Font.Charset = DEFAULT_CHARSET
+            Style.Font.Color = clWindowText
+            Style.Font.Height = -23
+            Style.Font.Name = 'Tahoma'
+            Style.Font.Style = []
             Style.LookAndFeel.NativeStyle = False
             Style.LookAndFeel.ScrollbarMode = sbmClassic
-            Style.LookAndFeel.SkinName = 'Blue'
+            Style.LookAndFeel.ScrollMode = scmClassic
+            Style.LookAndFeel.SkinName = 'SkinAzul'
+            Style.IsFontAssigned = True
             StyleDisabled.LookAndFeel.NativeStyle = False
             StyleDisabled.LookAndFeel.ScrollbarMode = sbmClassic
-            StyleDisabled.LookAndFeel.SkinName = 'Blue'
+            StyleDisabled.LookAndFeel.ScrollMode = scmClassic
+            StyleDisabled.LookAndFeel.SkinName = 'SkinAzul'
             StyleFocused.LookAndFeel.NativeStyle = False
             StyleFocused.LookAndFeel.ScrollbarMode = sbmClassic
-            StyleFocused.LookAndFeel.SkinName = 'Blue'
+            StyleFocused.LookAndFeel.ScrollMode = scmClassic
+            StyleFocused.LookAndFeel.SkinName = 'SkinAzul'
             StyleHot.LookAndFeel.NativeStyle = False
             StyleHot.LookAndFeel.ScrollbarMode = sbmClassic
-            StyleHot.LookAndFeel.SkinName = 'Blue'
+            StyleHot.LookAndFeel.ScrollMode = scmClassic
+            StyleHot.LookAndFeel.SkinName = 'SkinAzul'
             TabOrder = 1
             OnDrawItem = ListCamposSelectDrawItem
           end
           object BtGenerar_SELECT: TcxButton
             Left = 926
-            Top = 746
+            Top = 767
             Width = 402
             Height = 70
             Margins.Left = 5
@@ -579,8 +647,8 @@ object FRBuilder: TFRBuilder
             OnClick = BtGenerar_SELECTClick
           end
           object cxLabel3: TcxLabel
-            Left = 14
-            Top = 47
+            Left = 5
+            Top = 52
             Margins.Left = 5
             Margins.Top = 5
             Margins.Right = 5
@@ -643,7 +711,7 @@ object FRBuilder: TFRBuilder
           end
           object CkbListWhereSelect: TcxCheckBox
             Left = 819
-            Top = 40
+            Top = 35
             Hint = 'Seleccionar Todo'
             Margins.Left = 5
             Margins.Top = 5
@@ -674,8 +742,8 @@ object FRBuilder: TFRBuilder
           end
           object cxLabel7: TcxLabel
             Tag = 1
-            Left = 529
-            Top = 5
+            Left = 509
+            Top = 2
             Margins.Left = 5
             Margins.Top = 5
             Margins.Right = 5
@@ -684,7 +752,7 @@ object FRBuilder: TFRBuilder
             ParentFont = False
             Style.Font.Charset = DEFAULT_CHARSET
             Style.Font.Color = clBlue
-            Style.Font.Height = -21
+            Style.Font.Height = -23
             Style.Font.Name = 'Tahoma'
             Style.Font.Style = []
             Style.LookAndFeel.NativeStyle = False
@@ -713,31 +781,42 @@ object FRBuilder: TFRBuilder
             Left = 926
             Top = 72
             Width = 402
-            Height = 567
+            Height = 574
             Margins.Left = 5
             Margins.Top = 5
             Margins.Right = 5
             Margins.Bottom = 5
             EditValueFormat = cvfCaptions
             Items = <>
+            ParentFont = False
+            Style.Font.Charset = DEFAULT_CHARSET
+            Style.Font.Color = clWindowText
+            Style.Font.Height = -23
+            Style.Font.Name = 'Tahoma'
+            Style.Font.Style = []
             Style.LookAndFeel.NativeStyle = False
             Style.LookAndFeel.ScrollbarMode = sbmClassic
-            Style.LookAndFeel.SkinName = 'Blue'
+            Style.LookAndFeel.ScrollMode = scmClassic
+            Style.LookAndFeel.SkinName = 'SkinAzul'
+            Style.IsFontAssigned = True
             StyleDisabled.LookAndFeel.NativeStyle = False
             StyleDisabled.LookAndFeel.ScrollbarMode = sbmClassic
-            StyleDisabled.LookAndFeel.SkinName = 'Blue'
+            StyleDisabled.LookAndFeel.ScrollMode = scmClassic
+            StyleDisabled.LookAndFeel.SkinName = 'SkinAzul'
             StyleFocused.LookAndFeel.NativeStyle = False
             StyleFocused.LookAndFeel.ScrollbarMode = sbmClassic
-            StyleFocused.LookAndFeel.SkinName = 'Blue'
+            StyleFocused.LookAndFeel.ScrollMode = scmClassic
+            StyleFocused.LookAndFeel.SkinName = 'SkinAzul'
             StyleHot.LookAndFeel.NativeStyle = False
             StyleHot.LookAndFeel.ScrollbarMode = sbmClassic
-            StyleHot.LookAndFeel.SkinName = 'Blue'
+            StyleHot.LookAndFeel.ScrollMode = scmClassic
+            StyleHot.LookAndFeel.SkinName = 'SkinAzul'
             TabOrder = 3
             OnDrawItem = ListCamposSelectDrawItem
           end
           object CkbListOrderBy: TcxCheckBox
             Left = 1274
-            Top = 40
+            Top = 35
             Hint = 'Seleccionar Todo'
             Margins.Left = 5
             Margins.Top = 5
@@ -767,8 +846,8 @@ object FRBuilder: TFRBuilder
             OnClick = CkbListOrderByClick
           end
           object EdBusquedaCampo: TcxTextEdit
-            Left = 14
-            Top = 779
+            Left = 5
+            Top = 806
             Margins.Left = 5
             Margins.Top = 5
             Margins.Right = 5
@@ -790,7 +869,7 @@ object FRBuilder: TFRBuilder
             StyleHot.LookAndFeel.SkinName = 'Blue'
             TabOrder = 10
             OnKeyPress = EdBusquedaCampoKeyPress
-            Width = 401
+            Width = 403
           end
           object EdCantidadColSelect: TcxCalcEdit
             Left = 742
@@ -821,8 +900,8 @@ object FRBuilder: TFRBuilder
             Width = 88
           end
           object cxButton1: TcxButton
-            Left = 417
-            Top = 72
+            Left = 412
+            Top = 79
             Width = 35
             Height = 44
             Margins.Left = 5
@@ -853,8 +932,8 @@ object FRBuilder: TFRBuilder
             OnClick = cxButton1Click
           end
           object cxButton2: TcxButton
-            Left = 417
-            Top = 121
+            Left = 412
+            Top = 127
             Width = 35
             Height = 44
             Margins.Left = 5
@@ -1017,12 +1096,13 @@ object FRBuilder: TFRBuilder
           end
           object RgTipoScriptSELECT: TcxRadioGroup
             Left = 926
-            Top = 649
+            Top = 656
             Margins.Left = 5
             Margins.Top = 5
             Margins.Right = 5
             Margins.Bottom = 5
             Caption = 'Tipo de Script'
+            ParentFont = False
             Properties.Items = <
               item
                 Caption = 'Navito para Delphi'
@@ -1031,86 +1111,74 @@ object FRBuilder: TFRBuilder
                 Caption = 'Nativo para SQL Server'
               end>
             ItemIndex = 0
+            Style.Font.Charset = DEFAULT_CHARSET
+            Style.Font.Color = clWindowText
+            Style.Font.Height = -23
+            Style.Font.Name = 'Tahoma'
+            Style.Font.Style = []
             Style.LookAndFeel.NativeStyle = False
             Style.LookAndFeel.SkinName = 'Office2007Blue'
+            Style.IsFontAssigned = True
             StyleDisabled.LookAndFeel.NativeStyle = False
             StyleDisabled.LookAndFeel.SkinName = 'Office2007Blue'
             TabOrder = 18
-            Height = 88
+            Height = 104
             Width = 402
           end
-          object BtQueryBuilder: TcxButton
-            Left = 14
-            Top = 4
-            Width = 173
-            Height = 43
-            Hint = 'Construir SQL Joins'
-            Margins.Left = 5
-            Margins.Top = 5
-            Margins.Right = 5
-            Margins.Bottom = 5
-            CustomHint = BalloonHint1
-            Caption = 'Query Builder'
-            LookAndFeel.NativeStyle = False
-            LookAndFeel.SkinName = 'Office2010Silver'
-            OptionsImage.Glyph.SourceDPI = 96
-            OptionsImage.Glyph.Data = {
-              89504E470D0A1A0A0000000D49484452000000100000001008060000001FF3FF
-              610000000473424954080808087C0864880000027249444154388D95D15D4853
-              611807F0FF7B76B6B3733697A7E95C8A1F5353F303348CE82235359262080A09
-              4994915E545A2A96F326096B495F90661E098348E8B6CC2CA534C90F9028B09B
-              9240A3846A513977760E9BE7745162731AF9BF7E7FFFE7E5793458670AC23621
-              DF6CC57BD10D595140D6834B0A8BD0A2E36B2949B2BF99FF6E3FF27AD4430DDC
-              DC193F79373F2CDACAFE1347ECDE8F6D8D574E91E3954EA26772D24DFCC36A5B
-              8A860A35EAB66625F3C343426ED4E618C3AAD8527400F155CD754F65AE752236
-              8D28C72AFD8A9E999AF7FB1629002084A4C6451A4686BAF21232124D0138DC7E
-              08B1158E3A03C73A3996D1F6CC7AF080B50ABD71D69A8E99B7A0961E12426C56
-              B3FEF93321376D7B060F00882C3E8CF8830DF51B8C4627C7325A8F28F93CA22C
-              74F7F69F6CEA6AC7A2AA82FE7B1A21249237E9869FDCC8D95B7ACF3A29EEAAAE
-              3770860B4B58F4CA82EB455FCD74DB6940510020B0E04F8959D46E2C610B2A72
-              887E051E7D1480830A54557DF9D56F1A737C29FF26E92396B1240BAED1BE9AE9
-              EB8118C0F20E00609184D8DB7F944D7FA213CE2F61467675EEF1DEAF9DEB7204
-              E1A0024A17A369B44967134214DA234A3E4EFEDCD9C276B8EB2D03FD83573343
-              A3C299B50B5415EF14CAB28FD328E6CB96294F2A3577B19915DC499A0F4D0428
-              CCB019C787DBB213B3534CAB17B816E88E9E918562D9EB3A43BB5F659EE3BAAF
-              25696645002A001090642BCF8CF75FCACA2BCDB3042F51AF8AE93BC22706FD73
-              0B5514515AB5BF6F12308D006656A7797CBB31ED44720C77CB7967063454153E
-              D1ABD23EEFD1E8C0DFAD151D4588E028B76DB184320DF4ECC79F63ACE22DFB2F
-              BA2211BCCEF40BC294F27EE36FEB200000000049454E44AE426082}
-            OptionsImage.Layout = blGlyphRight
-            OptionsImage.Spacing = 7
-            ParentShowHint = False
-            ShowHint = True
-            TabOrder = 19
-            TabStop = False
-            OnClick = BtQueryBuilderClick
-          end
           object ListCamposSelect: TcxCheckListBox
-            Left = 14
-            Top = 72
+            Left = 5
+            Top = 79
             Width = 403
-            Height = 702
+            Height = 722
             Margins.Left = 5
             Margins.Top = 5
             Margins.Right = 5
             Margins.Bottom = 5
             EditValueFormat = cvfCaptions
             Items = <>
+            ParentFont = False
+            Style.Font.Charset = DEFAULT_CHARSET
+            Style.Font.Color = clWindowText
+            Style.Font.Height = -23
+            Style.Font.Name = 'Tahoma'
+            Style.Font.Style = []
             Style.LookAndFeel.NativeStyle = False
-            Style.LookAndFeel.ScrollbarMode = sbmDefault
-            Style.LookAndFeel.SkinName = 'Blue'
+            Style.LookAndFeel.ScrollbarMode = sbmClassic
+            Style.LookAndFeel.ScrollMode = scmClassic
+            Style.LookAndFeel.SkinName = 'SkinAzul'
+            Style.IsFontAssigned = True
             StyleDisabled.LookAndFeel.NativeStyle = False
-            StyleDisabled.LookAndFeel.ScrollbarMode = sbmDefault
-            StyleDisabled.LookAndFeel.SkinName = 'Blue'
+            StyleDisabled.LookAndFeel.ScrollbarMode = sbmClassic
+            StyleDisabled.LookAndFeel.ScrollMode = scmClassic
+            StyleDisabled.LookAndFeel.SkinName = 'SkinAzul'
             StyleFocused.LookAndFeel.NativeStyle = False
-            StyleFocused.LookAndFeel.ScrollbarMode = sbmDefault
-            StyleFocused.LookAndFeel.SkinName = 'Blue'
+            StyleFocused.LookAndFeel.ScrollbarMode = sbmClassic
+            StyleFocused.LookAndFeel.ScrollMode = scmClassic
+            StyleFocused.LookAndFeel.SkinName = 'SkinAzul'
             StyleHot.LookAndFeel.NativeStyle = False
-            StyleHot.LookAndFeel.ScrollbarMode = sbmDefault
-            StyleHot.LookAndFeel.SkinName = 'Blue'
-            TabOrder = 20
+            StyleHot.LookAndFeel.ScrollbarMode = sbmClassic
+            StyleHot.LookAndFeel.ScrollMode = scmClassic
+            StyleHot.LookAndFeel.SkinName = 'SkinAzul'
+            TabOrder = 19
             OnClickCheck = ListCamposSelectClickCheck
             OnDrawItem = ListCamposSelectDrawItem
+          end
+          object LbQueryBuilder: TcxLabel
+            Tag = 1
+            Left = 5
+            Top = 12
+            Margins.Left = 5
+            Margins.Top = 5
+            Margins.Right = 5
+            Margins.Bottom = 5
+            Caption = 'Select Query Builder'
+            Style.LookAndFeel.NativeStyle = False
+            Style.TextColor = clGreen
+            Style.TextStyle = [fsBold]
+            StyleDisabled.LookAndFeel.NativeStyle = False
+            StyleFocused.LookAndFeel.NativeStyle = False
+            StyleHot.LookAndFeel.NativeStyle = False
+            Transparent = True
           end
         end
         object cxTabSheet2: TcxTabSheet
@@ -1121,7 +1189,7 @@ object FRBuilder: TFRBuilder
           Caption = 'INSERT'
           ImageIndex = 1
           object ListCamposInsert: TcxCheckListBox
-            Left = 14
+            Left = 5
             Top = 42
             Width = 613
             Height = 630
@@ -1139,17 +1207,21 @@ object FRBuilder: TFRBuilder
             Style.Font.Style = []
             Style.LookAndFeel.NativeStyle = False
             Style.LookAndFeel.ScrollbarMode = sbmClassic
-            Style.LookAndFeel.SkinName = 'Blue'
+            Style.LookAndFeel.ScrollMode = scmClassic
+            Style.LookAndFeel.SkinName = 'SkinAzul'
             Style.IsFontAssigned = True
             StyleDisabled.LookAndFeel.NativeStyle = False
             StyleDisabled.LookAndFeel.ScrollbarMode = sbmClassic
-            StyleDisabled.LookAndFeel.SkinName = 'Blue'
+            StyleDisabled.LookAndFeel.ScrollMode = scmClassic
+            StyleDisabled.LookAndFeel.SkinName = 'SkinAzul'
             StyleFocused.LookAndFeel.NativeStyle = False
             StyleFocused.LookAndFeel.ScrollbarMode = sbmClassic
-            StyleFocused.LookAndFeel.SkinName = 'Blue'
+            StyleFocused.LookAndFeel.ScrollMode = scmClassic
+            StyleFocused.LookAndFeel.SkinName = 'SkinAzul'
             StyleHot.LookAndFeel.NativeStyle = False
             StyleHot.LookAndFeel.ScrollbarMode = sbmClassic
-            StyleHot.LookAndFeel.SkinName = 'Blue'
+            StyleHot.LookAndFeel.ScrollMode = scmClassic
+            StyleHot.LookAndFeel.SkinName = 'SkinAzul'
             TabOrder = 0
             OnClickCheck = ListCamposInsertClickCheck
             OnDrawItem = ListCamposSelectDrawItem
@@ -1221,7 +1293,7 @@ object FRBuilder: TFRBuilder
             OnClick = BtGenerar_INSERTClick
           end
           object cxLabel2: TcxLabel
-            Left = 14
+            Left = 5
             Top = 12
             Margins.Left = 5
             Margins.Top = 5
@@ -1271,8 +1343,8 @@ object FRBuilder: TFRBuilder
           end
           object cxLabel14: TcxLabel
             Tag = 1
-            Left = 677
-            Top = 4
+            Left = 658
+            Top = 2
             Margins.Left = 5
             Margins.Top = 5
             Margins.Right = 5
@@ -1281,7 +1353,7 @@ object FRBuilder: TFRBuilder
             ParentFont = False
             Style.Font.Charset = DEFAULT_CHARSET
             Style.Font.Color = clBlue
-            Style.Font.Height = -21
+            Style.Font.Height = -23
             Style.Font.Name = 'Tahoma'
             Style.Font.Style = []
             Style.LookAndFeel.NativeStyle = False
@@ -1337,17 +1409,21 @@ object FRBuilder: TFRBuilder
             Style.Font.Style = []
             Style.LookAndFeel.NativeStyle = False
             Style.LookAndFeel.ScrollbarMode = sbmClassic
-            Style.LookAndFeel.SkinName = 'Blue'
+            Style.LookAndFeel.ScrollMode = scmClassic
+            Style.LookAndFeel.SkinName = 'SkinAzul'
             Style.IsFontAssigned = True
             StyleDisabled.LookAndFeel.NativeStyle = False
             StyleDisabled.LookAndFeel.ScrollbarMode = sbmClassic
-            StyleDisabled.LookAndFeel.SkinName = 'Blue'
+            StyleDisabled.LookAndFeel.ScrollMode = scmClassic
+            StyleDisabled.LookAndFeel.SkinName = 'SkinAzul'
             StyleFocused.LookAndFeel.NativeStyle = False
             StyleFocused.LookAndFeel.ScrollbarMode = sbmClassic
-            StyleFocused.LookAndFeel.SkinName = 'Blue'
+            StyleFocused.LookAndFeel.ScrollMode = scmClassic
+            StyleFocused.LookAndFeel.SkinName = 'SkinAzul'
             StyleHot.LookAndFeel.NativeStyle = False
             StyleHot.LookAndFeel.ScrollbarMode = sbmClassic
-            StyleHot.LookAndFeel.SkinName = 'Blue'
+            StyleHot.LookAndFeel.ScrollMode = scmClassic
+            StyleHot.LookAndFeel.SkinName = 'SkinAzul'
             TabOrder = 6
           end
           object BtAddItem: TcxButton
@@ -1519,6 +1595,7 @@ object FRBuilder: TFRBuilder
             Margins.Right = 5
             Margins.Bottom = 5
             Caption = 'Tipo de Script'
+            ParentFont = False
             Properties.Columns = 2
             Properties.Items = <
               item
@@ -1528,8 +1605,14 @@ object FRBuilder: TFRBuilder
                 Caption = 'Nativo para SQL Server'
               end>
             ItemIndex = 0
+            Style.Font.Charset = DEFAULT_CHARSET
+            Style.Font.Color = clWindowText
+            Style.Font.Height = -23
+            Style.Font.Name = 'Tahoma'
+            Style.Font.Style = []
             Style.LookAndFeel.NativeStyle = False
             Style.LookAndFeel.SkinName = 'Office2007Blue'
+            Style.IsFontAssigned = True
             StyleDisabled.LookAndFeel.NativeStyle = False
             StyleDisabled.LookAndFeel.SkinName = 'Office2007Blue'
             TabOrder = 11
@@ -1642,18 +1725,29 @@ object FRBuilder: TFRBuilder
             Margins.Bottom = 5
             EditValueFormat = cvfCaptions
             Items = <>
+            ParentFont = False
+            Style.Font.Charset = DEFAULT_CHARSET
+            Style.Font.Color = clWindowText
+            Style.Font.Height = -23
+            Style.Font.Name = 'Tahoma'
+            Style.Font.Style = []
             Style.LookAndFeel.NativeStyle = False
             Style.LookAndFeel.ScrollbarMode = sbmClassic
-            Style.LookAndFeel.SkinName = 'Blue'
+            Style.LookAndFeel.ScrollMode = scmClassic
+            Style.LookAndFeel.SkinName = 'SkinAzul'
+            Style.IsFontAssigned = True
             StyleDisabled.LookAndFeel.NativeStyle = False
             StyleDisabled.LookAndFeel.ScrollbarMode = sbmClassic
-            StyleDisabled.LookAndFeel.SkinName = 'Blue'
+            StyleDisabled.LookAndFeel.ScrollMode = scmClassic
+            StyleDisabled.LookAndFeel.SkinName = 'SkinAzul'
             StyleFocused.LookAndFeel.NativeStyle = False
             StyleFocused.LookAndFeel.ScrollbarMode = sbmClassic
-            StyleFocused.LookAndFeel.SkinName = 'Blue'
+            StyleFocused.LookAndFeel.ScrollMode = scmClassic
+            StyleFocused.LookAndFeel.SkinName = 'SkinAzul'
             StyleHot.LookAndFeel.NativeStyle = False
             StyleHot.LookAndFeel.ScrollbarMode = sbmClassic
-            StyleHot.LookAndFeel.SkinName = 'Blue'
+            StyleHot.LookAndFeel.ScrollMode = scmClassic
+            StyleHot.LookAndFeel.SkinName = 'SkinAzul'
             TabOrder = 2
             OnClickCheck = ListCamposUpdateClickCheck
             OnDrawItem = ListCamposSelectDrawItem
@@ -1683,18 +1777,29 @@ object FRBuilder: TFRBuilder
             Margins.Bottom = 5
             EditValueFormat = cvfCaptions
             Items = <>
+            ParentFont = False
+            Style.Font.Charset = DEFAULT_CHARSET
+            Style.Font.Color = clWindowText
+            Style.Font.Height = -23
+            Style.Font.Name = 'Tahoma'
+            Style.Font.Style = []
             Style.LookAndFeel.NativeStyle = False
             Style.LookAndFeel.ScrollbarMode = sbmClassic
-            Style.LookAndFeel.SkinName = 'Blue'
+            Style.LookAndFeel.ScrollMode = scmClassic
+            Style.LookAndFeel.SkinName = 'SkinAzul'
+            Style.IsFontAssigned = True
             StyleDisabled.LookAndFeel.NativeStyle = False
             StyleDisabled.LookAndFeel.ScrollbarMode = sbmClassic
-            StyleDisabled.LookAndFeel.SkinName = 'Blue'
+            StyleDisabled.LookAndFeel.ScrollMode = scmClassic
+            StyleDisabled.LookAndFeel.SkinName = 'SkinAzul'
             StyleFocused.LookAndFeel.NativeStyle = False
             StyleFocused.LookAndFeel.ScrollbarMode = sbmClassic
-            StyleFocused.LookAndFeel.SkinName = 'Blue'
+            StyleFocused.LookAndFeel.ScrollMode = scmClassic
+            StyleFocused.LookAndFeel.SkinName = 'SkinAzul'
             StyleHot.LookAndFeel.NativeStyle = False
             StyleHot.LookAndFeel.ScrollbarMode = sbmClassic
-            StyleHot.LookAndFeel.SkinName = 'Blue'
+            StyleHot.LookAndFeel.ScrollMode = scmClassic
+            StyleHot.LookAndFeel.SkinName = 'SkinAzul'
             TabOrder = 4
             OnDrawItem = ListCamposSelectDrawItem
           end
@@ -1762,8 +1867,8 @@ object FRBuilder: TFRBuilder
           end
           object cxLabel10: TcxLabel
             Tag = 1
-            Left = 224
-            Top = 9
+            Left = 208
+            Top = 5
             Margins.Left = 5
             Margins.Top = 5
             Margins.Right = 5
@@ -1772,7 +1877,7 @@ object FRBuilder: TFRBuilder
             ParentFont = False
             Style.Font.Charset = DEFAULT_CHARSET
             Style.Font.Color = clBlue
-            Style.Font.Height = -21
+            Style.Font.Height = -23
             Style.Font.Name = 'Tahoma'
             Style.Font.Style = []
             Style.LookAndFeel.NativeStyle = False
@@ -1948,6 +2053,7 @@ object FRBuilder: TFRBuilder
             Margins.Right = 5
             Margins.Bottom = 5
             Caption = 'Tipo de Script'
+            ParentFont = False
             Properties.Columns = 2
             Properties.Items = <
               item
@@ -1957,8 +2063,14 @@ object FRBuilder: TFRBuilder
                 Caption = 'Nativo para SQL Server'
               end>
             ItemIndex = 0
+            Style.Font.Charset = DEFAULT_CHARSET
+            Style.Font.Color = clWindowText
+            Style.Font.Height = -23
+            Style.Font.Name = 'Tahoma'
+            Style.Font.Style = []
             Style.LookAndFeel.NativeStyle = False
             Style.LookAndFeel.SkinName = 'Office2007Blue'
+            Style.IsFontAssigned = True
             StyleDisabled.LookAndFeel.NativeStyle = False
             StyleDisabled.LookAndFeel.SkinName = 'Office2007Blue'
             TabOrder = 13
@@ -2070,18 +2182,29 @@ object FRBuilder: TFRBuilder
             Margins.Bottom = 5
             EditValueFormat = cvfCaptions
             Items = <>
+            ParentFont = False
+            Style.Font.Charset = DEFAULT_CHARSET
+            Style.Font.Color = clWindowText
+            Style.Font.Height = -23
+            Style.Font.Name = 'Tahoma'
+            Style.Font.Style = []
             Style.LookAndFeel.NativeStyle = False
             Style.LookAndFeel.ScrollbarMode = sbmClassic
-            Style.LookAndFeel.SkinName = 'Blue'
+            Style.LookAndFeel.ScrollMode = scmClassic
+            Style.LookAndFeel.SkinName = 'SkinAzul'
+            Style.IsFontAssigned = True
             StyleDisabled.LookAndFeel.NativeStyle = False
             StyleDisabled.LookAndFeel.ScrollbarMode = sbmClassic
-            StyleDisabled.LookAndFeel.SkinName = 'Blue'
+            StyleDisabled.LookAndFeel.ScrollMode = scmClassic
+            StyleDisabled.LookAndFeel.SkinName = 'SkinAzul'
             StyleFocused.LookAndFeel.NativeStyle = False
             StyleFocused.LookAndFeel.ScrollbarMode = sbmClassic
-            StyleFocused.LookAndFeel.SkinName = 'Blue'
+            StyleFocused.LookAndFeel.ScrollMode = scmClassic
+            StyleFocused.LookAndFeel.SkinName = 'SkinAzul'
             StyleHot.LookAndFeel.NativeStyle = False
             StyleHot.LookAndFeel.ScrollbarMode = sbmClassic
-            StyleHot.LookAndFeel.SkinName = 'Blue'
+            StyleHot.LookAndFeel.ScrollMode = scmClassic
+            StyleHot.LookAndFeel.SkinName = 'SkinAzul'
             TabOrder = 2
             OnDrawItem = ListCamposSelectDrawItem
           end
@@ -2189,6 +2312,7 @@ object FRBuilder: TFRBuilder
             Margins.Right = 5
             Margins.Bottom = 5
             Caption = 'Tipo de Script'
+            ParentFont = False
             Properties.Columns = 2
             Properties.Items = <
               item
@@ -2198,8 +2322,14 @@ object FRBuilder: TFRBuilder
                 Caption = 'Nativo para SQL Server'
               end>
             ItemIndex = 0
+            Style.Font.Charset = DEFAULT_CHARSET
+            Style.Font.Color = clWindowText
+            Style.Font.Height = -23
+            Style.Font.Name = 'Tahoma'
+            Style.Font.Style = []
             Style.LookAndFeel.NativeStyle = False
             Style.LookAndFeel.SkinName = 'Office2007Blue'
+            Style.IsFontAssigned = True
             StyleDisabled.LookAndFeel.NativeStyle = False
             StyleDisabled.LookAndFeel.SkinName = 'Office2007Blue'
             TabOrder = 6
@@ -2673,8 +2803,8 @@ object FRBuilder: TFRBuilder
   object BalloonHint1: TBalloonHint
     Delay = 0
     HideAfter = 1000
-    Left = 165
-    Top = 751
+    Left = 191
+    Top = 628
   end
   object cxShellBrowserDialog1: TcxShellBrowserDialog
     FolderLabelCaption = 'Ruta seleccionada'
@@ -2684,14 +2814,14 @@ object FRBuilder: TFRBuilder
     LookAndFeel.SkinName = 'Blue'
     Root.BrowseFolder = bfDrives
     Title = 'Seleccione el Directorio'
-    Left = 169
-    Top = 593
+    Left = 197
+    Top = 761
   end
   object DataBase: TFDConnection
     Params.Strings = (
       'DriverID=MSSQL')
-    Left = 1012
-    Top = 753
+    Left = 998
+    Top = 725
   end
   object FDPhysMSSQLDriverLink1: TFDPhysMSSQLDriverLink
     ODBCDriver = 'ODBC Driver 17 for SQL Server'
@@ -2775,8 +2905,8 @@ object FRBuilder: TFRBuilder
       'WHERE TYPE IN ('#39'P'#39','#39'FN'#39')'
       'AND SO.Name = :ProcedureName'
       'ORDER BY [Schema], SO.Name, PM.parameter_id')
-    Left = 1069
-    Top = 700
+    Left = 1125
+    Top = 686
     ParamData = <
       item
         Name = 'PROCEDURENAME'
@@ -2815,16 +2945,15 @@ object FRBuilder: TFRBuilder
   end
   object QryConsulta: TFDQuery
     Connection = DataBase
-    Left = 520
-    Top = 711
+    Left = 616
+    Top = 628
   end
   object QryUtils: TFDQuery
     Connection = DataBase
-    Left = 646
-    Top = 683
+    Left = 739
+    Top = 719
   end
   object dxSkinController1: TdxSkinController
-    NativeStyle = False
     Left = 1139
     Top = 964
   end

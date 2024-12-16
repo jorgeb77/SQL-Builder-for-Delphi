@@ -80,7 +80,6 @@
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_1_Win32)'!=''">
         <DCC_RemoteDebug>false</DCC_RemoteDebug>
-        <AppEnableRuntimeThemes>true</AppEnableRuntimeThemes>
         <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
         <VerInfo_Locale>1033</VerInfo_Locale>
         <AppDPIAwarenessMode>PerMonitor</AppDPIAwarenessMode>
@@ -103,21 +102,15 @@
             <Form>FRBuilder</Form>
             <FormType>dfm</FormType>
         </DCCReference>
-        <DCCReference Include="UFRQueryBuilder.pas">
-            <Form>FRQueryBuilder</Form>
-            <FormType>dfm</FormType>
-        </DCCReference>
-        <DCCReference Include="UFRNuevoJoin.pas">
-            <Form>FRNuevoJoin</Form>
-            <FormType>dfm</FormType>
-        </DCCReference>
-        <DCCReference Include="UFRListadoTablas.pas">
-            <Form>FRListadoTablas</Form>
-            <FormType>dfm</FormType>
-        </DCCReference>
         <DCCReference Include="Librerias\Utileria.pas"/>
         <DCCReference Include="Librerias\SynTaskDialog.pas"/>
         <DCCReference Include="Librerias\ModoOscuroClaro.pas"/>
+        <DCCReference Include="SelectQueryBuilder.pas"/>
+        <DCCReference Include="SQLAliasGenerator.pas"/>
+        <DCCReference Include="UFRSelectQueryBuilder.pas">
+            <Form>FRSelectQueryBuilder</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>
@@ -139,8 +132,7 @@
                     <Source Name="MainSource">SQLBuilder.dpr</Source>
                 </Source>
                 <Excluded_Packages>
-                    <Excluded_Packages Name="$(BDSBIN)\dcloffice2k250.bpl">Microsoft Office 2000 Sample Automation Server Wrapper Components</Excluded_Packages>
-                    <Excluded_Packages Name="$(BDSBIN)\dclofficexp250.bpl">Microsoft Office XP Sample Automation Server Wrapper Components</Excluded_Packages>
+                    <Excluded_Packages Name="$(BDSBIN)\dcloffice2k280.bpl">Microsoft Office 2000 Sample Automation Server Wrapper Components</Excluded_Packages>
                 </Excluded_Packages>
             </Delphi.Personality>
             <Deployment Version="4">

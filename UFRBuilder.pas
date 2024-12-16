@@ -6,7 +6,7 @@ uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants,
   System.Classes, Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.Menus,
   Vcl.StdCtrls, Vcl.ExtCtrls, Vcl.WinXCtrls, IniFiles, ShellApi, Clipbrd,
-  Vcl.ComCtrls,
+  Vcl.ComCtrls, StrUtils,
   Data.DB, FireDAC.Stan.Intf, FireDAC.Stan.Option,
   FireDAC.Stan.Error, FireDAC.UI.Intf, FireDAC.Phys.Intf, FireDAC.Stan.Def,
   FireDAC.Stan.Pool, FireDAC.Stan.Async, FireDAC.Phys, FireDAC.Phys.MSSQL,
@@ -21,7 +21,7 @@ uses
   cxShellBrowserDialog, dxStatusBar, cxMemo, dxActivityIndicator, cxListBox,
   cxMaskEdit, cxDropDownEdit, cxCalc, cxCustomListBox, cxCheckListBox,
   dxToggleSwitch, cxGroupBox, cxRadioGroup, cxButtons, cxTextEdit, cxLabel,
-  dxBevel, cxPC;
+  dxBevel, cxPC, dxGDIPlusClasses;
 
 
 type
@@ -112,7 +112,6 @@ type
     RgTipoScriptINSERT: TcxRadioGroup;
     RgTipoScriptUPDATE: TcxRadioGroup;
     RgTipoScriptDELETE: TcxRadioGroup;
-    BtQueryBuilder: TcxButton;
     cxShellBrowserDialog1: TcxShellBrowserDialog;
     ListCamposSelect: TcxCheckListBox;
     DataBase: TFDConnection;
@@ -125,6 +124,8 @@ type
     QryUtils: TFDQuery;
     dxToggleSwitch1: TdxToggleSwitch;
     dxSkinController1: TdxSkinController;
+    LbQueryBuilder: TcxLabel;
+    Image1: TImage;
     procedure FormCreate(Sender: TObject);
     procedure BtGenerar_INSERTClick(Sender: TObject);
     procedure BtBuscarClick(Sender: TObject);
@@ -175,15 +176,14 @@ type
     procedure cxButton10Click(Sender: TObject);
     procedure cxButton11Click(Sender: TObject);
     procedure cxButton12Click(Sender: TObject);
-    procedure BtQueryBuilderClick(Sender: TObject);
     procedure dxToggleSwitch1Click(Sender: TObject);
+    procedure Image1Click(Sender: TObject);
   private
     procedure LimpiarListados;
     function TotalChecked(CheckList : TcxCheckListBox) : Integer;
     procedure SeleccionarTodo(CheckList : TcxCheckListBox; Value : Boolean);
 
     function MasLargo(Lista : TStringList) : Integer;
-    function ExtraerHastaUltimo(Cadena : string; Caracter : Char) : string;
 
 //    function GetTokenCount(Cadena, Separador : string) : Integer;
 //    function GetToken(Cadena, Separador : string; Token : Integer) : string;
@@ -195,7 +195,7 @@ type
 //    procedure DeleteToken(Cadena, Separador : string; Token : Integer);
 
 //    function DesarmarCadena(const Separador, Cadena : string) : TArray<string>;
-    function DivideCadena(Cadena : string; Cantidad : Integer; Separador : Char) : string;
+
 
     //    function BuscarElementoLista(Elemento : string; Lista : TcxCheckListBox) : Integer;
     procedure LbMoveItemUp(AListBox : TcxListBox);
@@ -223,7 +223,7 @@ var
 implementation
 
 uses
-  StrUtils, UFRQueryBuilder, Utileria, ModoOscuroClaro;
+  Utileria, UFRSelectQueryBuilder, ModoOscuroClaro;
 
 {$R *.dfm}
 
@@ -401,10 +401,10 @@ end;
 
 procedure TFRBuilder.BtGenerar_INSERTClick(Sender: TObject);
 var
-  I, J, CantidadCol : Integer;
+  I, J, CantidadCol, CampoCount : Integer;
   myFile : TextFile;
-  Ruta, C, Cadena, Temp : string;
-  Parametros, Lineas : TStringList;
+  Ruta, InsertFields : string;
+  Parametros, Campos : TStringList;
   LongMax : Integer;
 begin
   if ListCamposInsertSel.Items.Count = 0 then
@@ -443,56 +443,63 @@ begin
 
           //ARMAMOS UNA CADENA DELIMITADA CON LOS CAMPOS SELECCIONADOS
 
-          Cadena := EmptyStr;
+          InsertFields := '';
+          CampoCount   := 0;
+
           for I:= 0 to ListCamposInsertSel.Items.Count - 1 do
-            begin
-              C := EmptyStr;
-              if I < ListCamposInsertSel.Items.Count - 1 then
-                C := ',';
+          begin
+            Inc(CampoCount);
+            InsertFields := InsertFields + ListCamposInsertSel.Items.Strings[I] + ', ';
 
-              Cadena := Cadena + ListCamposInsertSel.Items.Strings[I] + C;
-            end;
+            if (CampoCount mod CantidadCol) = 0 then
+              begin
+                InsertFields := InsertFields + sLineBreak;
+              end;
+          end;
 
-          //EN ESTE PROCESO, DIVIDIMOS LA CADENA EN VARIAS LINEAS
-          Temp := DivideCadena(Cadena, CantidadCol, ',');
+          InsertFields := Copy(Trim(InsertFields), 1, Length(Trim(InsertFields)) - 1); // Eliminar la última coma
 
-          Lineas := TStringList.Create;
-          Lineas.Delimiter := #13; //Separador que utilizara el TStringList
-          Lineas.Text      := Temp;
+          Campos := TStringList.Create;
+          Campos.Delimiter := #13; //Separador que utilizara el TStringList
+          Campos.Text      := InsertFields;
 
-          for I := 0 to Lineas.Count - 1 do
-            if I < Lineas.Count - 1 then
-              WriteLn(myFile, '    Add(''' + Trim(Lineas[I]) + ''');')
+          for I := 0 to Campos.Count - 1 do
+            if I < Campos.Count - 1 then
+              WriteLn(myFile, '    Add(''' + Trim(Campos[I]) + ''');')
             else
-              WriteLn(myFile, '    Add(''' + Lineas[I] + ')'');'); //agregamos el )
+              WriteLn(myFile, '    Add(''' + Campos[I] + ')'');'); //agregamos el )
 
-          Lineas.Free;
+          Campos.Free;
 
           WriteLn(myFile, '    Add(''VALUES ( ''' + ');' );
 
-          Cadena := EmptyStr;
+          InsertFields := '';
+          CampoCount   := 0;
+
           for I:= 0 to ListCamposInsertSel.Items.Count - 1 do
-            begin
-              C := EmptyStr;
-              if I < ListCamposInsertSel.Items.Count - 1 then
-                C := ',';
+          begin
+            Inc(CampoCount);
+            InsertFields := InsertFields + ':' + ListCamposInsertSel.Items.Strings[I] + ', ';
 
-              Cadena := Cadena + ':' + ListCamposInsertSel.Items.Strings[I] + C;
-            end;
+            if (CampoCount mod CantidadCol) = 0 then
+              begin
+                InsertFields := InsertFields + sLineBreak;
+              end;
+          end;
 
-          Temp := DivideCadena(Cadena, CantidadCol, ',');
+          InsertFields := Copy(Trim(InsertFields), 1, Length(Trim(InsertFields)) - 1); // Eliminar la última coma
 
-          Lineas := TStringList.Create;
-          Lineas.Delimiter := #13; //Separador que utilizara el TStringList
-          Lineas.Text      := Temp;
+          Campos := TStringList.Create;
+          Campos.Delimiter := #13; //Separador que utilizara el TStringList
+          Campos.Text      := InsertFields;
 
-          for I := 0 to Lineas.Count - 1 do
-            if I < Lineas.Count - 1 then
-              WriteLn(myFile, '    Add(''' + Trim(Lineas[I]) + ''');')
+          for I := 0 to Campos.Count - 1 do
+            if I < Campos.Count - 1 then
+              WriteLn(myFile, '    Add(''' + Trim(Campos[I]) + ''');')
             else
-              WriteLn(myFile, '    Add(''' + Lineas[I] + ')'');'); //agregamos el )
+              WriteLn(myFile, '    Add(''' + Campos[I] + ')'');'); //agregamos el )
 
-          Lineas.Free;
+          Campos.Free;
 
 
           //AQUI ARMAMOS LOS PARAMETROS Y SUS TIPOS DE DATOS
@@ -561,7 +568,6 @@ begin
                 end;
             end;
 
-
           LongMax := MasLargo(Parametros);  //Obtenemos la linea mas larga del listado
 
           for I := 0 to Parametros.Count - 1 do
@@ -579,55 +585,63 @@ begin
     1 : begin
           WriteLn(myFile, 'INSERT INTO ' + Trim(TxtTabla.Text) + ' (');
 
-          Cadena := EmptyStr;
+          InsertFields := '';
+          CampoCount   := 0;
+
           for I:= 0 to ListCamposInsertSel.Items.Count - 1 do
-            begin
-              C := EmptyStr;
-              if I < ListCamposInsertSel.Items.Count - 1 then
-                C := ',';
+          begin
+            Inc(CampoCount);
+            InsertFields := InsertFields + ListCamposInsertSel.Items.Strings[I] + ', ';
 
-              Cadena := Cadena + ListCamposInsertSel.Items.Strings[I] + C;
-            end;
+            if (CampoCount mod CantidadCol) = 0 then
+              begin
+                InsertFields := InsertFields + sLineBreak;
+              end;
+          end;
 
-          Temp := DivideCadena(Cadena, CantidadCol, ',');
+          InsertFields := Copy(Trim(InsertFields), 1, Length(Trim(InsertFields)) - 1); // Eliminar la última coma
 
-          Lineas := TStringList.Create;
-          Lineas.Delimiter := #13; //Separador que utilizara el TStringList
-          Lineas.Text      := Temp;
+          Campos := TStringList.Create;
+          Campos.Delimiter := #13; //Separador que utilizara el TStringList
+          Campos.Text      := InsertFields;
 
-          for I := 0 to Lineas.Count - 1 do
-            if I < Lineas.Count - 1 then
-              WriteLn(myFile, Lineas[I])
+          for I:= 0 to Campos.Count - 1 do
+            if I < Campos.Count - 1 then
+              WriteLn(myFile, '  ' + Campos[I])
             else
-              WriteLn(myFile, Lineas[I] + ')'); //agregamos el )
+              WriteLn(myFile, '  ' + Campos[I] + ')'); //agregamos el )
 
-          Lineas.Free;
+          Campos.Free;
 
           WriteLn(myFile, 'VALUES (');
 
-          Cadena := EmptyStr;
+          InsertFields := '';
+          CampoCount   := 0;
+
           for I:= 0 to ListCamposInsertSel.Items.Count - 1 do
-            begin
-              C := EmptyStr;
-              if I < ListCamposInsertSel.Items.Count - 1 then
-                C := ',';
+          begin
+            Inc(CampoCount);
+            InsertFields := InsertFields + '@' + ListCamposInsertSel.Items.Strings[I] + ', ';
 
-              Cadena := Cadena + '@' + ListCamposInsertSel.Items.Strings[I] + C;
-            end;
+            if (CampoCount mod CantidadCol) = 0 then
+              begin
+                InsertFields := InsertFields + sLineBreak;
+              end;
+          end;
 
-          Temp := DivideCadena(Cadena, CantidadCol, ',');
+          InsertFields := Copy(Trim(InsertFields), 1, Length(Trim(InsertFields)) - 1); // Eliminar la última coma
 
-          Lineas := TStringList.Create;
-          Lineas.Delimiter := #13; //Separador que utilizara el TStringList
-          Lineas.Text      := Temp;
+          Campos := TStringList.Create;
+          Campos.Delimiter := #13; //Separador que utilizara el TStringList
+          Campos.Text      := InsertFields;
 
-          for I := 0 to Lineas.Count - 1 do
-            if I < Lineas.Count - 1 then
-              WriteLn(myFile, Lineas[I])
+          for I:= 0 to Campos.Count - 1 do
+            if I < Campos.Count - 1 then
+              WriteLn(myFile, '  ' + Campos[I])
             else
-              WriteLn(myFile, Lineas[I] + ')'); //agregamos el )
+              WriteLn(myFile, '  ' + Campos[I] + ')'); //agregamos el )
 
-          Lineas.Free;
+          Campos.Free;
 
         end;
   end;
@@ -651,15 +665,11 @@ end;
 
 procedure TFRBuilder.BtGenerar_SELECTClick(Sender: TObject);
 var
-  I, J, CantCampos, CountItem, Item : Integer;
+  I, J, CantCampos, CampoCount, LongMax : Integer;
   myFile : TextFile;
-  Ruta, Str : string;
+  Ruta, SelectFields, OrderByFields : string;
   SelectTodos : Boolean;
   Parametros, Campos : TStringList;
-  LongMax : Integer;
-
-  Cadena, Temp : string;
-  Lineas : TStringList;
 begin
   if CheckSelection(ListCamposSelect) = False then
     begin
@@ -706,31 +716,42 @@ begin
             begin
               //ARMAMOS UNA CADENA DELIMITADA CON LOS CAMPOS SELECCIONADOS
 
-              Cadena := EmptyStr;
+              SelectFields := EmptyStr;
+              CampoCount   := 0;
               for I:= 0 to ListCamposSelect.Items.Count - 1 do
                 begin
                   if ListCamposSelect.Items.Items[I].State = cbsChecked then
                     begin
-                      Cadena := Cadena + ListCamposSelect.Items.Items[I].Text + ',';
+                      Inc(CampoCount);
+                      SelectFields := SelectFields + ListCamposSelect.Items.Items[I].Text + ', ';
+
+                      if (CampoCount mod CantCampos) = 0 then //Si es multiplo de x cantidad
+                        begin
+                          SelectFields := SelectFields + sLineBreak;
+                        end;
+
                     end;
                 end;
 
-              //EN ESTE PROCESO, DIVIDIMOS LA CADENA EN VARIAS LINEAS
-              Temp := DivideCadena(Cadena, CantCampos, ',');
+              SelectFields := Copy(SelectFields, 1, Length(SelectFields) - 2); // Se Elimina la última coma y el espacio
 
-              Lineas := TStringList.Create;
-              Lineas.Delimiter := #13; //Separador que utilizara el TStringList
-              Lineas.Text      := Temp;
+              { UNA VEZ QUE TERMINAMOS DE DIVIDIR LA CADENA, ALMACENAMOS EN
+                UN TStringList PARA VOLVER A RECORRERLA OTRA VEZ Y CREAR EL
+                SELECT EN FORMATO DELPHI}
 
-              for I := 0 to Lineas.Count - 1 do
+              Campos := TStringList.Create;
+              Campos.Delimiter := #13; //Separador que utilizara el TStringList
+              Campos.Text      := SelectFields;
+
+              for I:= 0 to Campos.Count - 1 do
                 begin
                   if I = 0 then
-                    WriteLn(myFile, '    Add(''SELECT ' + Trim(Lineas[I]) + ''');')
+                    WriteLn(myFile, '    Add(''SELECT ' + Trim(Campos[I]) + ''');')
                   else
-                    WriteLn(myFile, '    Add(''' + Trim(Lineas[I]) + ''');');
+                    WriteLn(myFile, '    Add(''' + Trim(Campos[I]) + ''');');
                 end;
 
-              Lineas.Free;
+              Campos.Free;
             end;
 
           if SelectTodos = False then
@@ -741,14 +762,14 @@ begin
 
           //AQUI GENERAMOS EL WHERE DE LA CONSULTA...
 
-          if TotalChecked(ListCamposWhereSelect) > 0 then
+          if CheckSelection(ListCamposWhereSelect) then
             begin
-              Item := 0;
+              CampoCount := 0;
               for I := 0 to ListCamposWhereSelect.Items.Count - 1 do
                 if ListCamposWhereSelect.Items.Items[I].State = cbsChecked then
                   begin
-                    Inc(Item);
-                    if Item = 1 then //Si es el primer item seleccionado...
+                    Inc(CampoCount);
+                    if CampoCount = 1 then //Si es el primer item seleccionado...
                       WriteLn(myFile, '    Add(''WHERE '+ ListCamposWhereSelect.Items.Items[I].Text + ' = :' + ListCamposWhereSelect.Items.Items[I].Text + ''');' )
                     else
                       WriteLn(myFile, '    Add(''AND ' + ListCamposWhereSelect.Items.Items[I].Text + ' = :' + ListCamposWhereSelect.Items.Items[I].Text + ''');' );
@@ -833,38 +854,36 @@ begin
 
           //AQUI GENERAMOS EL ORDER BY DE LA CONSULTA...
 
-          if TotalChecked(ListCamposOrderBy) > 0 then
+          if CheckSelection(ListCamposOrderBy) then
             begin
-              Campos := TStringList.Create;
-
-              Str := 'ORDER BY ';
-              Item      := 0;
-              CountItem := 0;
+              OrderByFields := EmptyStr;
+              CampoCount    := 0;
               for I:= 0 to ListCamposOrderBy.Items.Count - 1 do
-                if ListCamposOrderBy.Items.Items[I].State = cbsChecked then
-                  begin
-                    Inc(CountItem);  //Contamos los Item para compararlo con la cantidad de campos
-                    Inc(Item); //Contamos los items seleccionados en el CheckList, para agregar la coma segun corresponda
+                begin
+                  if ListCamposOrderBy.Items.Items[I].State = cbsChecked then
+                    begin
+                      Inc(CampoCount);
+                      OrderByFields := OrderByFields + ListCamposOrderBy.Items.Items[I].Text + ', ';
 
-                    if Item = TotalChecked(ListCamposOrderBy) then //Si el item actual es igual al total de item seleccionados, entonces es el ultimo
-                      Str := Str + ListCamposOrderBy.Items.Items[I].Text //no le agregamos la coma
-                    else
-                      Str := Str + ListCamposOrderBy.Items.Items[I].Text + ', ';
+                      if (CampoCount mod CantCampos) = 0 then //Si es multiplo de x cantidad
+                        begin
+                          OrderByFields := OrderByFields + sLineBreak;
+                        end;
+                    end;
+                end;
 
-                    if CantCampos = CountItem then //PARA LIMITAR LA CANTIDAD DE ITEMS POR LINEA
-                      begin
-                        Campos.Add(TrimRight(Str));  //Agregamos la linea acumulada al stringlist
-                        Str  := EmptyStr;
-                        CountItem := 0;   // lo ponemos en cero para volver a contar
-                      end;
-                  end;
+              OrderByFields := Copy(Trim(OrderByFields), 1, Length(Trim(OrderByFields)) - 1); // Se Elimina la última coma
 
-              if Str <> EmptyStr then
-                Campos.Add(Str); //Agregamos el string restante...
+              Campos := TStringList.Create;
+              Campos.Delimiter := #13; //Separador que utilizara el TStringList
+              Campos.Text      := OrderByFields;
 
               for I:= 0 to Campos.Count - 1 do
                 begin
-                  WriteLn(myFile, '    Add(''' + Campos[I] + ''');' );
+                  if I = 0 then
+                    WriteLn(myFile, '    Add(''ORDER BY ' + Trim(Campos[I]) + ''');')
+                  else
+                    WriteLn(myFile, '    Add(''' + Campos[I] + ''');' );
                 end;
 
               Campos.Free;
@@ -872,7 +891,6 @@ begin
 
           WriteLn(myFile, '    Open;');
           WriteLn(myFile, '  end;');
-
         end;
 
 
@@ -889,33 +907,28 @@ begin
 
           if SelectTodos = False then
             begin
-              //ARMAMOS UNA CADENA DELIMITADA CON LOS CAMPOS SELECCIONADOS
+              //AQUI CREAMOS EL SELECT DE LA CONSULTA
+              //CON UNA CADENA DELIMITADA CON LOS CAMPOS SELECCIONADOS
 
-              Cadena := EmptyStr;
+              SelectFields := EmptyStr;
+              CampoCount   := 0;
               for I:= 0 to ListCamposSelect.Items.Count - 1 do
                 begin
                   if ListCamposSelect.Items.Items[I].State = cbsChecked then
                     begin
-                      Cadena := Cadena + ListCamposSelect.Items.Items[I].Text + ',';
+                      Inc(CampoCount);
+                      SelectFields := SelectFields + ListCamposSelect.Items.Items[I].Text + ', ';
+
+                      if (CampoCount mod CantCampos) = 0 then //Si es multiplo de x cantidad
+                        begin
+                          SelectFields := SelectFields + sLineBreak;
+                        end;
                     end;
                 end;
 
-              //EN ESTE PROCESO, DIVIDIMOS LA CADENA EN VARIAS LINEAS
-              Temp := DivideCadena(Cadena, CantCampos, ',');
+              SelectFields := Copy(SelectFields, 1, Length(SelectFields) - 2); // Se Elimina la última coma y el espacio
 
-              Lineas := TStringList.Create;
-              Lineas.Delimiter := #13; //Separador que utilizara el TStringList
-              Lineas.Text      := Temp;
-
-              for I := 0 to Lineas.Count - 1 do
-                begin
-                  if I = 0 then
-                    WriteLn(myFile, 'SELECT ' + Trim(Lineas[I]))
-                  else
-                    WriteLn(myFile, Trim(Lineas[I]));
-                end;
-
-              Lineas.Free;
+              WriteLn(myFile, 'SELECT ' + SelectFields);
             end;
 
           if SelectTodos = False then
@@ -926,57 +939,42 @@ begin
 
           //AQUI GENERAMOS EL WHERE DE LA CONSULTA...
 
-          if TotalChecked(ListCamposWhereSelect) > 0 then
+          CampoCount := 0;
+          for I := 0 to ListCamposWhereSelect.Items.Count - 1 do
             begin
-              Item := 0;
-              for I := 0 to ListCamposWhereSelect.Items.Count - 1 do
-                if ListCamposWhereSelect.Items.Items[I].State = cbsChecked then
-                  begin
-                    Inc(Item);
-                    if Item = 1 then //Si es el primer item seleccionado...
-                      WriteLn(myFile, ' WHERE '+ ListCamposWhereSelect.Items.Items[I].Text + ' = @' + ListCamposWhereSelect.Items.Items[I].Text)
-                    else
-                      WriteLn(myFile, ' AND ' + ListCamposWhereSelect.Items.Items[I].Text + ' = @' + ListCamposWhereSelect.Items.Items[I].Text);
-                  end;
+              if ListCamposWhereSelect.Items.Items[I].State = cbsChecked then
+                begin
+                  Inc(CampoCount);
+
+                  if CampoCount = 1 then //Si es el primer item seleccionado...
+                    WriteLn(myFile, 'WHERE '+ ListCamposWhereSelect.Items.Items[I].Text + ' = @' + ListCamposWhereSelect.Items.Items[I].Text)
+                  else
+                    WriteLn(myFile, 'AND ' + ListCamposWhereSelect.Items.Items[I].Text + ' = @' + ListCamposWhereSelect.Items.Items[I].Text);
+                end;
             end;
 
           //AQUI GENERAMOS EL ORDER BY DE LA CONSULTA...
 
-          if TotalChecked(ListCamposOrderBy) > 0 then
+          if CheckSelection(ListCamposOrderBy) then  //Verificamos si hay al menos uno seleccionado
             begin
-              Campos := TStringList.Create;
-
-              Str := 'ORDER BY ';
-              Item      := 0;
-              CountItem := 0;
+              OrderByFields := EmptyStr;
+              CampoCount    := 0;
               for I:= 0 to ListCamposOrderBy.Items.Count - 1 do
-                if ListCamposOrderBy.Items.Items[I].State = cbsChecked then
-                  begin
-                    Inc(CountItem);  //Contamos los Item para compararlo con la cantidad de campos
-                    Inc(Item); //Contamos los items seleccionados en el CheckList, para agregar la coma segun corresponda
-
-                    if Item = TotalChecked(ListCamposOrderBy) then //Si el item actual es igual al total de item seleccionados, entonces es el ultimo
-                      Str := Str + ListCamposOrderBy.Items.Items[I].Text //no le agregamos la coma
-                    else
-                      Str := Str + ListCamposOrderBy.Items.Items[I].Text + ', ';
-
-                    if CantCampos = CountItem then //PARA LIMITAR LA CANTIDAD DE ITEMS POR LINEA
-                      begin
-                        Campos.Add(TrimRight(Str));  //Agregamos la linea acumulada al stringlist
-                        Str  := EmptyStr;
-                        CountItem := 0;   // lo ponemos en cero para volver a contar
-                      end;
-                  end;
-
-              if Str <> EmptyStr then
-                Campos.Add(Str); //Agregamos el string restante...
-
-              for I:= 0 to Campos.Count - 1 do
                 begin
-                  WriteLn(myFile, Campos[I]);
+                  if ListCamposOrderBy.Items.Items[I].State = cbsChecked then
+                    begin
+                      Inc(CampoCount);
+                      OrderByFields := OrderByFields + ListCamposOrderBy.Items.Items[I].Text + ', ';
+
+                      if (CampoCount mod CantCampos) = 0 then //Si es multiplo de x cantidad
+                        begin
+                          OrderByFields := OrderByFields + sLineBreak;
+                        end;
+                    end;
                 end;
 
-              Campos.Free;
+              OrderByFields := Copy(Trim(OrderByFields), 1, Length(Trim(OrderByFields)) - 1); // Se Elimina la última coma
+              WriteLn(myFile, 'ORDER BY ' + OrderByFields);
             end;
         end;
   end;
@@ -1000,11 +998,10 @@ end;
 
 procedure TFRBuilder.BtGenerar_UPDATEClick(Sender: TObject);
 var
-  I, J, CantCampos, CountItem : Integer;
+  I, J, CantCampos, CampoCount, LongMax : Integer;
   myFile : TextFile;
-  Ruta, Str, C : string;
+  Ruta, UpdateFields : string;
   Parametros, Campos : TStringList;
-  LongMax : Integer;
 begin
   if CheckSelection(ListCamposUpdate) = False then
     begin
@@ -1029,7 +1026,7 @@ begin
       Abort;
     end;
 
-  CantCampos := StrToIntDef(EdCantidadColUpdate.Text, 0);
+  CantCampos := StrToIntDef(EdCantidadColUpdate.Text, 1);
 
   case RgTipoScriptUPDATE.ItemIndex of
     0 : begin
@@ -1037,66 +1034,43 @@ begin
           WriteLn(myFile, '  begin');
           WriteLn(myFile, '    Close;');
           WriteLn(myFile, '    Clear;');
-          WriteLn(myFile, '    Add(''UPDATE ' + Trim(TxtTabla.Text) + ' SET '');');
+          WriteLn(myFile, '    Add(''UPDATE ' + Trim(TxtTabla.Text) + ' SET'');');
 
-          Campos := TStringList.Create;
+          UpdateFields := EmptyStr;
+          CampoCount   := 0;
 
-          CountItem := 0;
           for I:= 0 to ListCamposUpdate.Items.Count - 1 do
+          begin
             if ListCamposUpdate.Items.Items[I].State = cbsChecked then
               begin
-                Inc(CountItem);  //Contamos los Item para compararlo con la cantidad de campos
+                Inc(CampoCount);
+                UpdateFields := UpdateFields + ListCamposUpdate.Items.Items[I].Text + ' = :' + ListCamposUpdate.Items.Items[I].Text + ', ';
 
-        //        Str := Str + ListCamposUpdate.Items.Items[I].Text + ' = :' + ListCamposUpdate.Items.Items[I].Text + ', ';
-
-//                if I = 0 then
-//                  Str := ListCamposUpdate.Items.Items[I].Text + ' = :' + ListCamposUpdate.Items.Items[I].Text
-//                else
-//                  Str := Str + ListCamposUpdate.Items.Items[I].Text + ' = :' + ListCamposUpdate.Items.Items[I].Text + ', ';
-
-
-                C := EmptyStr; //para el manejo de la coma
-
-                if CountItem < TotalChecked(ListCamposUpdate) then
-                  C := ', ';
-
-                Str := Str + ListCamposUpdate.Items.Items[I].Text + ' = :' + ListCamposUpdate.Items.Items[I].Text + C;
-
-                if CantCampos = CountItem then //PARA LIMITAR LA CANTIDAD DE ITEMS POR LINEA
-                  begin
-                    Campos.Add(TrimRight(Str));  //Agregamos la linea acumulada al stringlist
-                    Str  := EmptyStr;
-                    CountItem := 0;   // lo ponemos en cero para volver a contar
-                  end;
+                if (CampoCount mod CantCampos) = 0 then
+                  UpdateFields := Trim(UpdateFields) + sLineBreak;
               end;
+          end;
 
-          if Str <> EmptyStr then
-            Campos.Add(Str);
+          if CantCampos = 1 then // CUANDO NO ELEGIMOS AGRUPAR LOS CAMPOS ESTA SALIENDO UNA COMA DE MAS, SE DEBE VERIFICAR EL PORQUE....
+            UpdateFields := Copy(UpdateFields, 1, Length(UpdateFields) - 3)
+          else
+            UpdateFields := Copy(UpdateFields, 1, Length(UpdateFields) - 2); // Eliminar la última coma y el espacio
 
-//          for I:= 0 to Campos.Count - 1 do
-//            begin
-//              WriteLn(myFile, '    Add(''' + Campos[I] + ''');' );
-//            end;
+          Campos := TStringList.Create;
+          Campos.Delimiter := #13; //Separador que utilizara el TStringList
+          Campos.Text      := UpdateFields;
 
-          CountItem := 0;
           for I:= 0 to Campos.Count - 1 do
             begin
-              Inc(CountItem);
-
-              if CantCampos = 0 then
-                WriteLn(myFile, '    Add(''' + Campos[I] + ''');')
-              else
-                if CountItem < Campos.Count then
-                  WriteLn(myFile, '    Add(''' + Campos[I] + ''');')
-                else
-                  WriteLn(myFile, '    Add(''' + ExtraerHastaUltimo(Campos[I], ',') + ''');'); //Quitamos la ultima coma
+              WriteLn(myFile, '    Add(''' + Campos[I] + ''');' );
             end;
 
           Campos.Free;
 
-          Parametros := TStringList.Create;
 
           //AQUI ARMAMOS LOS PARAMETROS DE ASIGNACION DE VALORES Y SUS TIPOS DE DATOS
+
+          Parametros := TStringList.Create;
 
           for J := 0 to ListCamposUpdate.Items.Count - 1 do
             if ListCamposUpdate.Items.Items[J].State = cbsChecked then
@@ -1163,82 +1137,82 @@ begin
 
           //AQUI GENERAMOS EL WHERE DEL UPDATE...
 
-          if TotalChecked(ListCamposWhereUpdate) > 0 then
+          CampoCount := 0;
+          for I := 0 to ListCamposWhereUpdate.Items.Count - 1 do
             begin
-              CountItem := 0;
-              for I := 0 to ListCamposWhereUpdate.Items.Count - 1 do
-                if ListCamposWhereUpdate.Items.Items[I].State = cbsChecked then
+              if ListCamposWhereUpdate.Items.Items[I].State = cbsChecked then
+                begin
+                  Inc(CampoCount);
+
+                  if CampoCount = 1 then //Si es el primer item seleccionado...
+                    WriteLn(myFile, '    Add(''WHERE '+ ListCamposWhereUpdate.Items.Items[I].Text + ' = :' + ListCamposWhereUpdate.Items.Items[I].Text + ''');' )
+                  else
+                    WriteLn(myFile, '    Add(''AND ' + ListCamposWhereUpdate.Items.Items[I].Text + ' = :' + ListCamposWhereUpdate.Items.Items[I].Text + ''');' );
+                end;
+            end;
+
+
+          //AQUI ARMAMOS LOS PARAMETROS DEL WHERE Y SUS TIPOS DE DATOS
+
+          for J := 0 to ListCamposWhereUpdate.Items.Count - 1 do
+            if ListCamposWhereUpdate.Items.Items[J].State = cbsChecked then
+              begin
+                QryConsulta.First;
+                for I := 0 to QryConsulta.Fields.Count - 1 do
                   begin
-                    Inc(CountItem);
-
-                    if CountItem = 1 then //Si es el primer item
-                      WriteLn(myFile, '    Add(''WHERE '+ ListCamposWhereUpdate.Items.Items[I].Text + ' = :' + ListCamposWhereUpdate.Items.Items[I].Text + ''');' )
-                    else
-                      WriteLn(myFile, '    Add(''AND ' + ListCamposWhereUpdate.Items.Items[I].Text + ' = :' + ListCamposWhereUpdate.Items.Items[I].Text + ''');' );
-                  end;
-
-              //AQUI ARMAMOS LOS PARAMETROS DEL WHERE Y SUS TIPOS DE DATOS
-
-              for J := 0 to ListCamposWhereUpdate.Items.Count - 1 do
-                if ListCamposWhereUpdate.Items.Items[J].State = cbsChecked then
-                  begin
-                    QryConsulta.First;
-                    for I := 0 to QryConsulta.Fields.Count - 1 do
+                    if ListCamposWhereUpdate.Items.Items[J].Text = QryConsulta.Fields[I].FieldName then
                       begin
-                        if ListCamposWhereUpdate.Items.Items[J].Text = QryConsulta.Fields[I].FieldName then
+                        if (QryConsulta.Fields[I].DataType = ftFloat)
+                        or (QryConsulta.Fields[I].DataType = ftCurrency)
+                        or (QryConsulta.Fields[I].DataType = ftBCD) then
                           begin
-                            if (QryConsulta.Fields[I].DataType = ftFloat)
-                            or (QryConsulta.Fields[I].DataType = ftCurrency)
-                            or (QryConsulta.Fields[I].DataType = ftBCD) then
-                              begin
-                                Parametros.Add('    ParamByName(' + QuotedStr(QryConsulta.Fields[I].FieldName) + ').AsFloat');
-                              end;
-
-                            if (QryConsulta.Fields[I].DataType = ftString)
-                            or (QryConsulta.Fields[I].DataType = ftMemo) then
-                              begin
-                                Parametros.Add('    ParamByName(' + QuotedStr(QryConsulta.Fields[I].FieldName) + ').AsString');
-                              end;
-
-                            if (QryConsulta.Fields[I].DataType = ftDate) then
-                              begin
-                                Parametros.Add('    ParamByName(' + QuotedStr(QryConsulta.Fields[I].FieldName) + ').AsDate');
-                              end;
-
-                            if (QryConsulta.Fields[I].DataType = ftDateTime)
-                            or (QryConsulta.Fields[I].DataType = ftTimeStamp) then
-                              begin
-                                Parametros.Add('    ParamByName(' + QuotedStr(QryConsulta.Fields[I].FieldName) + ').AsDateTime');
-                              end;
-
-                            if (QryConsulta.Fields[I].DataType = ftTime) then
-                              begin
-                                Parametros.Add('    ParamByName(' + QuotedStr(QryConsulta.Fields[I].FieldName) + ').AsTime');
-                              end;
-
-                            if (QryConsulta.Fields[I].DataType = ftInteger)
-                            or (QryConsulta.Fields[I].DataType = ftSmallint)
-                            or (QryConsulta.Fields[I].DataType = ftWord)
-                            or (QryConsulta.Fields[I].DataType = ftLongWord) then
-                              begin
-                                Parametros.Add('    ParamByName(' + QuotedStr(QryConsulta.Fields[I].FieldName) + ').AsInteger');
-                              end;
-
-                            if (QryConsulta.Fields[I].DataType = ftLargeint) then
-                              begin
-                                Parametros.Add('    ParamByName(' + QuotedStr(QryConsulta.Fields[I].FieldName) + ').AsLargeInt');
-                              end;
-
-                            if (QryConsulta.Fields[I].DataType = ftBoolean) then
-                              begin
-                                Parametros.Add('    ParamByName(' + QuotedStr(QryConsulta.Fields[I].FieldName) + ').AsBoolean');
-                              end;
+                            Parametros.Add('    ParamByName(' + QuotedStr(QryConsulta.Fields[I].FieldName) + ').AsFloat');
                           end;
 
-                        QryConsulta.Next;
+                        if (QryConsulta.Fields[I].DataType = ftString)
+                        or (QryConsulta.Fields[I].DataType = ftMemo) then
+                          begin
+                            Parametros.Add('    ParamByName(' + QuotedStr(QryConsulta.Fields[I].FieldName) + ').AsString');
+                          end;
+
+                        if (QryConsulta.Fields[I].DataType = ftDate) then
+                          begin
+                            Parametros.Add('    ParamByName(' + QuotedStr(QryConsulta.Fields[I].FieldName) + ').AsDate');
+                          end;
+
+                        if (QryConsulta.Fields[I].DataType = ftDateTime)
+                        or (QryConsulta.Fields[I].DataType = ftTimeStamp) then
+                          begin
+                            Parametros.Add('    ParamByName(' + QuotedStr(QryConsulta.Fields[I].FieldName) + ').AsDateTime');
+                          end;
+
+                        if (QryConsulta.Fields[I].DataType = ftTime) then
+                          begin
+                            Parametros.Add('    ParamByName(' + QuotedStr(QryConsulta.Fields[I].FieldName) + ').AsTime');
+                          end;
+
+                        if (QryConsulta.Fields[I].DataType = ftInteger)
+                        or (QryConsulta.Fields[I].DataType = ftSmallint)
+                        or (QryConsulta.Fields[I].DataType = ftWord)
+                        or (QryConsulta.Fields[I].DataType = ftLongWord) then
+                          begin
+                            Parametros.Add('    ParamByName(' + QuotedStr(QryConsulta.Fields[I].FieldName) + ').AsInteger');
+                          end;
+
+                        if (QryConsulta.Fields[I].DataType = ftLargeint) then
+                          begin
+                            Parametros.Add('    ParamByName(' + QuotedStr(QryConsulta.Fields[I].FieldName) + ').AsLargeInt');
+                          end;
+
+                        if (QryConsulta.Fields[I].DataType = ftBoolean) then
+                          begin
+                            Parametros.Add('    ParamByName(' + QuotedStr(QryConsulta.Fields[I].FieldName) + ').AsBoolean');
+                          end;
                       end;
+
+                    QryConsulta.Next;
                   end;
-            end;
+              end;
 
           LongMax := MasLargo(Parametros);  //Obtenemos la linea mas larga del listado
 
@@ -1256,66 +1230,67 @@ begin
     1 : begin
           WriteLn(myFile, 'UPDATE ' + Trim(TxtTabla.Text) + ' SET');
 
-          Campos := TStringList.Create;
+          LongMax  := 0;
 
-          CountItem := 0;
+          //Verificamos cual es el campo mas largo del listado
           for I:= 0 to ListCamposUpdate.Items.Count - 1 do
+          begin
             if ListCamposUpdate.Items.Items[I].State = cbsChecked then
               begin
-                Inc(CountItem);  //Contamos los Item para compararlo con la cantidad de campos
+                if Length(ListCamposUpdate.Items.Items[I].Text) > LongMax then
+                  LongMax := Length(ListCamposUpdate.Items.Items[I].Text);
+              end;
+          end;
 
-                C := EmptyStr; //para el manejo de la coma
+          UpdateFields := EmptyStr;
+          CampoCount   := 0;
 
-                if CountItem < TotalChecked(ListCamposUpdate) then
-                  C := ', ' + sLineBreak;
+          for I:= 0 to ListCamposUpdate.Items.Count - 1 do
+          begin
+            if ListCamposUpdate.Items.Items[I].State = cbsChecked then
+              begin
+                Inc(CampoCount);
 
-                Str := Str + '  ' + Justifica(ListCamposUpdate.Items.Items[I].Text, 20,' ', tjLeft) + ' = @' + ListCamposUpdate.Items.Items[I].Text + C;
-
-                if CantCampos = CountItem then //PARA LIMITAR LA CANTIDAD DE ITEMS POR LINEA
-                  begin
-                    Campos.Add(TrimRight(Str));  //Agregamos la linea acumulada al stringlist
-                    Str  := EmptyStr;
-                    CountItem := 0;   // lo ponemos en cero para volver a contar
-                  end;
+                if CantCampos = 1 then   //SOLO ALINEAMOS LOS CAMPOS SI LA CANTIDAD DE AGRUPAMIENTO ES 1
+                  UpdateFields := UpdateFields + ' ' + Justifica(ListCamposUpdate.Items.Items[I].Text, LongMax,' ', tjLeft) + ' = @' + ListCamposUpdate.Items.Items[I].Text + ','
+                else
+                  UpdateFields := UpdateFields + ' ' + ListCamposUpdate.Items.Items[I].Text + ' = @' + ListCamposUpdate.Items.Items[I].Text + ',';
               end;
 
-          if Str <> EmptyStr then
-            begin
-              Campos.Add(Str)
-            end;
+            if (CampoCount mod CantCampos) = 0 then
+              begin
+                UpdateFields := UpdateFields + sLineBreak;
+              end;
+          end;
 
-          CountItem := 0;
+          UpdateFields := Copy(Trim(UpdateFields), 1, Length(Trim(UpdateFields)) - 1); // Eliminar la última coma
+
+          Campos := TStringList.Create;
+          Campos.Delimiter := #13; //Separador que utilizara el TStringList
+          Campos.Text      := UpdateFields;
+
           for I:= 0 to Campos.Count - 1 do
             begin
-              Inc(CountItem);
-
-              if CantCampos = 0 then
-                WriteLn(myFile, Campos[I])
-              else
-                if CountItem < Campos.Count then
-                  WriteLn(myFile, Campos[I])
-                else
-                  WriteLn(myFile, ExtraerHastaUltimo(Campos[I], ',')); //Quitamos la ultima coma
+              WriteLn(myFile, '  ' + Trim(Campos[I])); //Le agregamos espacio por delante para que los campos queden alineados
             end;
 
           Campos.Free;
 
           //AQUI GENERAMOS EL WHERE DEL UPDATE...
 
-          if TotalChecked(ListCamposWhereUpdate) > 0 then
+          CampoCount := 0;
+          for I := 0 to ListCamposWhereUpdate.Items.Count - 1 do
             begin
-              CountItem := 0;
-              for I := 0 to ListCamposWhereUpdate.Items.Count - 1 do
-                if ListCamposWhereUpdate.Items.Items[I].State = cbsChecked then
-                  begin
-                    Inc(CountItem);
-                    if CountItem = 1 then //Si es el primer item
-                      WriteLn(myFile, 'WHERE '+ ListCamposWhereUpdate.Items.Items[I].Text + ' = @' + ListCamposWhereUpdate.Items.Items[I].Text)
-                    else
-                      WriteLn(myFile, 'AND ' + ListCamposWhereUpdate.Items.Items[I].Text + ' = @' + ListCamposWhereUpdate.Items.Items[I].Text);
-                  end;
-            end;
+              if ListCamposWhereUpdate.Items.Items[I].State = cbsChecked then
+                begin
+                  Inc(CampoCount);
 
+                  if CampoCount = 1 then //Si es el primer item seleccionado...
+                    WriteLn(myFile, 'WHERE '+ ListCamposWhereUpdate.Items.Items[I].Text + ' = @' + ListCamposWhereUpdate.Items.Items[I].Text)
+                  else
+                    WriteLn(myFile, 'AND ' + ListCamposWhereUpdate.Items.Items[I].Text + ' = @' + ListCamposWhereUpdate.Items.Items[I].Text);
+                end;
+            end;
         end;
   end;
 
@@ -1343,13 +1318,6 @@ end;
 procedure TFRBuilder.BtItemUpClick(Sender: TObject);
 begin
   LbMoveItemUp(ListCamposInsertSel);
-end;
-
-procedure TFRBuilder.BtQueryBuilderClick(Sender: TObject);
-begin
-  FRQueryBuilder := TFRQueryBuilder.Create(Self);
-  FRQueryBuilder.ShowModal;
-  FRQueryBuilder.Free;
 end;
 
 procedure TFRBuilder.BtEstructuraTablaClick(Sender: TObject);
@@ -1756,11 +1724,10 @@ end;
 
 procedure TFRBuilder.BtGenerar_DELETEClick(Sender: TObject);
 var
-  I, J, CountItems : Integer;
+  I, J, CampoCount, LongMax : Integer;
   myFile : TextFile;
   Ruta : string;
   Parametros : TStringList;
-  LongMax : Integer;
 begin
   if CheckSelection(ListCamposWhereDelete) = False then
     begin
@@ -1792,21 +1759,23 @@ begin
           WriteLn(myFile, '  begin');
           WriteLn(myFile, '    Close;');
           WriteLn(myFile, '    Clear;');
-
           WriteLn(myFile, '    Add(''DELETE FROM ' + Trim(TxtTabla.Text) + ''');');
 
           //AQUI GENERAMOS EL WHERE DEL DELETE...
 
-          CountItems := 0;
+          CampoCount := 0;
           for I := 0 to ListCamposWhereDelete.Items.Count - 1 do
-            if ListCamposWhereDelete.Items.Items[I].State = cbsChecked then
-              begin
-                Inc(CountItems);
-                if CountItems = 1 then //Si es el primer item
-                  WriteLn(myFile, '    Add(''WHERE '+ ListCamposWhereDelete.Items.Items[I].Text + ' = :' + ListCamposWhereDelete.Items.Items[I].Text + ''');' )
-                else
-                  WriteLn(myFile, '    Add(''AND ' + ListCamposWhereDelete.Items.Items[I].Text + ' = :' + ListCamposWhereDelete.Items.Items[I].Text + ''');' );
-              end;
+            begin
+              if ListCamposWhereDelete.Items.Items[I].State = cbsChecked then
+                begin
+                  Inc(CampoCount);
+
+                  if CampoCount = 1 then //Si es el primer item seleccionado...
+                    WriteLn(myFile, '    Add(''WHERE '+ ListCamposWhereDelete.Items.Items[I].Text + ' = :' + ListCamposWhereDelete.Items.Items[I].Text + ''');' )
+                  else
+                    WriteLn(myFile, '    Add(''AND ' + ListCamposWhereDelete.Items.Items[I].Text + ' = :' + ListCamposWhereDelete.Items.Items[I].Text + ''');' );
+                end;
+            end;
 
           //AQUI ARMAMOS LOS PARAMETROS Y SUS TIPOS DE DATOS
           Parametros := TStringList.Create;
@@ -1887,16 +1856,20 @@ begin
 
           //AQUI GENERAMOS EL WHERE DEL DELETE...
 
-          CountItems := 0;
+          CampoCount := 0;
           for I := 0 to ListCamposWhereDelete.Items.Count - 1 do
-            if ListCamposWhereDelete.Items.Items[I].State = cbsChecked then
-              begin
-                Inc(CountItems);
-                if CountItems = 1 then //Si es el primer item
-                  WriteLn(myFile, 'WHERE '+ ListCamposWhereDelete.Items.Items[I].Text + ' = @' + ListCamposWhereDelete.Items.Items[I].Text)
-                else
-                  WriteLn(myFile, 'AND ' + ListCamposWhereDelete.Items.Items[I].Text + ' = @' + ListCamposWhereDelete.Items.Items[I].Text);
-              end;
+            begin
+              if ListCamposWhereDelete.Items.Items[I].State = cbsChecked then
+                begin
+                  Inc(CampoCount);
+
+                  if CampoCount = 1 then //Si es el primer item seleccionado...
+                    WriteLn(myFile, 'WHERE '+ ListCamposWhereDelete.Items.Items[I].Text + ' = @' + ListCamposWhereDelete.Items.Items[I].Text)
+                  else
+                    WriteLn(myFile, 'AND ' + ListCamposWhereDelete.Items.Items[I].Text + ' = @' + ListCamposWhereDelete.Items.Items[I].Text);
+                end;
+            end;
+
         end;
   end;
 
@@ -2012,6 +1985,13 @@ begin
 //  ActivityIndicator1.SendToBack;
   StbBarraEstado.Panels.Items[0].Text := 'Servidor : ' + DataBase.Params.Values['Server'];
   StbBarraEstado.Panels.Items[1].Text := 'Base de Datos : ' + DataBase.Params.Values['Database'];
+end;
+
+procedure TFRBuilder.Image1Click(Sender: TObject);
+begin
+  FRSelectQueryBuilder := TFRSelectQueryBuilder.Create(Self);
+  FRSelectQueryBuilder.ShowModal;
+  FRSelectQueryBuilder.Free;
 end;
 
 procedure TFRBuilder.LimpiarListados;
@@ -2592,7 +2572,7 @@ end;
 //Funcion para saber cual es la linea mas larga que tiene el StringList
 function TFRBuilder.MasLargo(Lista : TStringList) : Integer;
 var
-I, Valor, Max : Integer;
+  I, Valor, Max : Integer;
 begin
   Max := 0;
   for I := 0 to Lista.Count - 1 do
@@ -2602,18 +2582,6 @@ begin
           Max := Valor;
     end;
   Result := Max;
-end;
-
-//Funcion que extrae cadena hasta el ultimo caracter especificado
-function TFRBuilder.ExtraerHastaUltimo(Cadena : string; Caracter : Char) : string;
-var
-  I : Integer;
-begin
-  I:= Length(Cadena);
-  while (I > 0) and (Cadena[I] <> Caracter) do
-    Dec(I);
-
-  Result := Copy(Cadena, 1, I-1);
 end;
 
 { *** FUNCIONES PARA EL MANEJO DE CADENAS DELIMITADAS *** }
@@ -2775,60 +2743,6 @@ begin
   Result[I] := Copy(S, 1, Length(S));
 end;
 }
-
-//FUNCION PARA DIVIDIR STRING DELIMITADO DE ACUERDO A UNA CANTIDAD.
-function TFRBuilder.DivideCadena(Cadena : string; Cantidad : Integer; Separador : Char) : string;
-  // Extrae cadenas separadas por un separador
-  // Ind es el indice de la cadena a extraer, comenzando por 0
-  function Split(Cadena : string; Ind : Integer; Separador : Char) : string;
-  var
-    I, F, N : Integer;
-  begin
-    I := 1;
-    N := Length(Cadena);
-    while Ind > 0 do
-      begin
-        while (I <= N) and (Cadena[I] <> Separador) do
-        Inc(I);
-        Inc(I);
-        Dec(Ind);
-      end;
-
-    F := I;
-    while (F <= N) and (Cadena[F] <> Separador) do
-      Inc(F);
-
-    Result := Copy(Cadena, I, F - I);
-  end;
-
-var
-  I : Integer;
-  T : string;
-begin
-  Result := '';
-  I := 1;
-  T := Trim(Split(Cadena, 0, Separador));
-  if (Cantidad > 0) then
-    while T <> '' do
-      begin
-        Result := Result + T + Separador + ' ';
-        if (I mod Cantidad) = 0 then
-//          Result := Result + #13#10;
-          Result := Result + #13;
-        T := Trim(Split(Cadena, I, Separador));
-        Inc(I);
-      end;
-
-  I := Length(Result);
-
-  while (I > 0) and (Result[I] <> Separador) do
-  Dec(I);
-  Result := Copy(Result, 1, I - 1);
-
-{Las tres últimas líneas limpian la coma final.
- Date cuenta que puede ser una coma con un espacio en blanco ó con un retorno de línea.
- El código busca la coma desde el final de la cadena y la elimina}
-end;
 
 procedure TFRBuilder.dxToggleSwitch1Click(Sender: TObject);
 begin

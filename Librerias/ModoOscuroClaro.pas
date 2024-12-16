@@ -305,7 +305,7 @@ begin
         with Formulario.Components[I] as TcxCheckListBox do
           begin
             if ModoClaro = True then
-              Style.LookAndFeel.SkinName := 'Blue'
+              Style.LookAndFeel.SkinName := 'SkinAzul'
             else
               Style.LookAndFeel.SkinName := 'VisualStudio2013Dark';
           end;
